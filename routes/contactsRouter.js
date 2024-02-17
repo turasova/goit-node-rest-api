@@ -11,13 +11,6 @@ import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
-
-// const express = require("express");
-// const controllers = require("../controllers/contactsControllers");
-
-// const validateBody = require("../helpers/validateBody");
-// const schemas = require("../schemas/contactsSchemas");
-
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
@@ -31,4 +24,3 @@ contactsRouter.post("/", validateBody(createContactSchema), createContact);
 contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
 
 export default contactsRouter;
-//module.exports = contactsRouter;

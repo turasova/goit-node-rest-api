@@ -1,6 +1,8 @@
 {
   "name": "goit-node-rest-api",
-  "type": "module",
+  "type":"module",
+  "main": "app.js",
+ 
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js"

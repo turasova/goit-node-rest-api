@@ -16,8 +16,8 @@ async function getOneContact(req, res, next) {
   try {
     const contact = await Contact.findById(id);
 
-    if (contact === null) {
-      return HttpError(404, "Not found");
+    if (!contact) {
+      throw HttpError(404, "Not found");
     }
 
     res.send(contact);
@@ -32,8 +32,8 @@ async function deleteContact(req, res, next) {
   try {
     const result = await Contact.findByIdAndDelete(id);
 
-    if (result === null) {
-      return HttpError(404, "Not found");
+    if (!result) {
+      throw HttpError(404, "Not found");
     }
 
     res.send(result);
@@ -69,8 +69,8 @@ async function updateContact(req, res, next) {
   try {
     const result = await Contact.findByIdAndUpdate(id, contact, { new: true });
 
-    if (result === null) {
-      return HttpError(404, "Not found");
+    if (!result) {
+      throw HttpError(404, "Not found");
     }
 
     res.send(result);
@@ -94,8 +94,8 @@ async function updateStatusContact(req, res, next) {
       new: true,
     });
 
-    if (result === null) {
-      return HttpError(404, "Not found");
+    if (!result) {
+      throw HttpError(404, "Not found");
     }
 
     res.send(result);

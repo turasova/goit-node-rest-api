@@ -5,15 +5,16 @@ import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
+import isValidId from "../helpers/isValidId.js";
 
 const contactsRouter = express.Router();
 const jsonParse = express.json();
 
 contactsRouter.get("/", controllers.getAllContacts);
 
-contactsRouter.get("/:id", controllers.getOneContact);
+contactsRouter.get("/:id", isValidId, controllers.getOneContact);
 
-contactsRouter.delete("/:id", controllers.deleteContact);
+contactsRouter.delete("/:id", isValidId, controllers.deleteContact);
 
 contactsRouter.post(
   "/",
@@ -24,6 +25,7 @@ contactsRouter.post(
 
 contactsRouter.put(
   "/:id",
+  isValidId,
   jsonParse,
   validateBody(updateContactSchema),
   controllers.updateContact
@@ -31,6 +33,7 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
+  isValidId,
   jsonParse,
   validateBody(updateContactSchema),
   controllers.updateStatusContact

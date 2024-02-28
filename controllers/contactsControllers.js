@@ -1,69 +1,114 @@
-import {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContactById,
-} from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
+import Contact from "../models/contactModel.js";
 
-export const getAllContacts = async (req, res) => {
-  const result = await listContacts();
-  res.json(result);
-};
-
-export const getOneContact = async (req, res, next) => {
+async function getAllContacts(req, res, next) {
   try {
-    const { id } = req.params;
-    const result = await getContactById(id);
+    const contacts = await Contact.find();
+    res.send(contacts);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getOneContact(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const contact = await Contact.findById(id);
+
+    if (!contact) {
+      throw HttpError(404, "Not found");
+    }
+
+    res.send(contact);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteContact(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const result = await Contact.findByIdAndDelete(id);
 
     if (!result) {
       throw HttpError(404, "Not found");
     }
-    res.json(result);
+
+    res.send(result);
   } catch (error) {
     next(error);
   }
-};
+}
 
-export const deleteContact = async (req, res, next) => {
+async function createContact(req, res, next) {
+  const contact = {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+  };
+
   try {
-    const { id } = req.params;
-    const result = await removeContact(id);
-    if (!result) {
-      throw HttpError(404, "Not found");
-    }
-    res.status(200).json(result);
+    const result = await Contact.create(contact);
+    res.status(201).send(result);
   } catch (error) {
     next(error);
   }
-};
+}
 
-export const createContact = async (req, res, next) => {
+async function updateContact(req, res, next) {
+  const { id } = req.params;
+
+  const contact = {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+  };
+
   try {
-    const contactId = req.params;
-    const result = await addContact(req.body, contactId);
-    if (!result) {
-      throw HttpError(400, "Bad Request");
-    }
+    const result = await Contact.findByIdAndUpdate(id, contact, { new: true });
 
-    res.status(201).json(result);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-};
-
-export const updateContact = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await updateContactById(id, req.body);
     if (!result) {
       throw HttpError(404, "Not found");
     }
 
-    res.status(200).json(result);
+    res.send(result);
   } catch (error) {
     next(error);
   }
+}
+
+async function updateStatusContact(req, res, next) {
+  const { id } = req.params;
+
+  const contact = {
+    name: req.body.name,
+    email: req.body.email,
+    phone: req.body.phone,
+    favorite: req.body.favorite,
+  };
+
+  try {
+    const result = await Contact.findByIdAndUpdate(id, contact, {
+      new: true,
+    });
+
+    if (!result) {
+      throw HttpError(404, "Not found");
+    }
+
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export default {
+  getAllContacts,
+  getOneContact,
+  deleteContact,
+  createContact,
+  updateContact,
+  updateStatusContact,
 };

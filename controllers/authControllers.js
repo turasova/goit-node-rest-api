@@ -4,7 +4,7 @@ import User from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
 
 async function register(req, res, next) {
-  const { name, email, password } = req.body;
+  const { email, password } = req.body;
   const normalizedEmail = email.toLowerCase();
 
   try {
@@ -16,13 +16,14 @@ async function register(req, res, next) {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    await User.create({
-      name,
-      email: normalizedEmail,
-      password: passwordHash,
-    });
+    const newUser = await User.create({ ...req.body, password: passwordHash });
 
-    res.status(201).send("Registration successfully");
+    res.status(201).json({
+      user: {
+        email: newUser.email,
+        subscription: newUser.subscription,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -62,7 +63,10 @@ async function login(req, res, next) {
       { new: true }
     );
 
-    res.send(newUser);
+    res.send({
+      token,
+      user: { email: newUser.email, subscription: newUser.subscription },
+    });
   } catch (error) {
     next(error);
   }
@@ -79,10 +83,11 @@ async function logout(req, res, next) {
 }
 
 async function current(req, res) {
-  const { name } = req.user;
+  const { email, subscription } = req.user;
 
-  res.send({
-    name,
+  res.json({
+    email,
+    subscription,
   });
 }
 

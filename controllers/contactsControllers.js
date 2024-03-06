@@ -30,7 +30,7 @@ async function getOneContact(req, res, next) {
     }
 
     if (contact.owner.toString() !== req.user.id) {
-      return res.status(404).send("Contact not found");
+      return res.status(404).json({ message: "Contact not found" });
     }
 
     res.send(contact);
@@ -47,6 +47,10 @@ async function deleteContact(req, res, next) {
 
     if (!result) {
       throw HttpError(404, "Not found");
+    }
+
+    if (result.owner.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Contact not found" });
     }
 
     res.send(result);
@@ -87,6 +91,9 @@ async function updateContact(req, res, next) {
     if (!result) {
       throw HttpError(404, "Not found");
     }
+    if (result.owner.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
 
     res.send(result);
   } catch (error) {
@@ -111,6 +118,9 @@ async function updateStatusContact(req, res, next) {
 
     if (!result) {
       throw HttpError(404, "Not found");
+    }
+    if (result.owner.toString() !== req.user.id) {
+      return res.status(404).json({ message: "Contact not found" });
     }
 
     res.send(result);

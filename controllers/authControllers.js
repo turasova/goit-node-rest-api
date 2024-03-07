@@ -50,7 +50,7 @@ async function login(req, res, next) {
 
     const token = jwt.sign(
       {
-        id: user.id,
+        _id: user._id,
         name: user.name,
       },
       process.env.JWT_SECRET,
@@ -58,7 +58,7 @@ async function login(req, res, next) {
     );
 
     const newUser = await User.findByIdAndUpdate(
-      user.id,
+      user._id,
       { token },
       { new: true }
     );
@@ -74,8 +74,8 @@ async function login(req, res, next) {
 
 async function logout(req, res, next) {
   try {
-    const { id } = req.user;
-    await User.findByIdAndUpdate(id, { token: "" });
+    const { _id } = req.user;
+    await User.findByIdAndUpdate(_id, { token: "" });
     res.status(204).end();
   } catch (error) {
     next(error);

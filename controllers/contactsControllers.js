@@ -6,12 +6,12 @@ async function getAllContacts(req, res, next) {
   const skip = (page - 1) * limit;
   try {
     const contacts = await Contact.find(
-      { owner: req.user.id },
+      { owner: req.user._id },
       "-createdAt -updatedAt",
       { skip, limit }
     ).populate("owner", "name email");
 
-    console.log(req.query);
+    console.log(req.user._id);
 
     res.send(contacts);
   } catch (error) {
@@ -29,7 +29,7 @@ async function getOneContact(req, res, next) {
       throw HttpError(404, "Not found");
     }
 
-    if (contact.owner.toString() !== req.user.id) {
+    if (contact.owner.toString() !== req.user._id.toString()) {
       return res.status(404).json({ message: "Contact not found" });
     }
 
@@ -49,7 +49,7 @@ async function deleteContact(req, res, next) {
       throw HttpError(404, "Not found");
     }
 
-    if (result.owner.toString() !== req.user.id) {
+    if (result.owner.toString() !== req.user._id.toString()) {
       return res.status(404).json({ message: "Contact not found" });
     }
 
@@ -65,7 +65,7 @@ async function createContact(req, res, next) {
     name: req.body.name,
     email: req.body.email,
     phone: req.body.phone,
-    owner: req.user.id,
+    owner: req.user._id,
   };
 
   try {
@@ -91,7 +91,7 @@ async function updateContact(req, res, next) {
     if (!result) {
       throw HttpError(404, "Not found");
     }
-    if (result.owner.toString() !== req.user.id) {
+    if (result.owner.toString() !== req.user._id.toString()) {
       return res.status(404).json({ message: "Contact not found" });
     }
 
@@ -119,7 +119,7 @@ async function updateStatusContact(req, res, next) {
     if (!result) {
       throw HttpError(404, "Not found");
     }
-    if (result.owner.toString() !== req.user.id) {
+    if (result.owner.toString() !== req.user._id.toString()) {
       return res.status(404).json({ message: "Contact not found" });
     }
 

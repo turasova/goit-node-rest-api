@@ -6,5 +6,6 @@ node_modules/
 
 tmp/*
 !tmp/.gitkeep
-public/*
-!public/.gitkeep
+public/avatars/*
+!public/avatars/.gitkeep
+__tests__/*

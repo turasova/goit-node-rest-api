@@ -5,6 +5,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 const app = express();
 const DB_URI = process.env.DB_URI;
@@ -20,8 +21,9 @@ mongoose
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
-app.use("/users", authRouter);
+app.use("/users", authRouter, userRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
